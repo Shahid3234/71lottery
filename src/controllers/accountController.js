@@ -1,8 +1,8 @@
-import connection from "../config/connectDB";
-import jwt from 'jsonwebtoken'
-import md5 from "md5";
-import request from 'request';
-import e from "express";
+const connection = require("../config/connectDB");
+const jwt = require('jsonwebtoken');
+const md5 = require("md5");
+const request = require('request');
+const e = require("express");
 require('dotenv').config();
 
 let timeNow = Date.now();
@@ -17,7 +17,6 @@ const randomString = (length) => {
     }
     return result;
 }
-
 
 const randomNumber = (min, max) => {
     return String(Math.floor(Math.random() * (max - min + 1)) + min);
@@ -98,7 +97,6 @@ const login = async(req, res) => {
     } catch (error) {
         if (error) console.log(error);
     }
-
 }
 
 const register = async(req, res) => {
@@ -167,7 +165,6 @@ const register = async(req, res) => {
     } catch (error) {
         if (error) console.log(error);
     }
-
 }
 
 const verifyCode = async(req, res) => {
@@ -297,31 +294,27 @@ const forGotPassword = async(req, res) => {
             if (user.otp == otp) {
                 await connection.execute("UPDATE users SET password = ?, otp = ?, time_otp = ? WHERE phone = ? ", [md5(pwd), otp2, timeEnd, username]);
                 return res.status(200).json({
-                    message: 'Change password successfully',
+                    message: 'Reset password successfully',
                     status: true,
                     timeStamp: timeNow,
                     timeEnd: timeEnd,
                 });
             } else {
                 return res.status(200).json({
-                    message: 'OTP code is incorrect',
+                    message: 'Incorrect OTP',
                     status: false,
                     timeStamp: timeNow,
                 });
             }
         } else {
             return res.status(200).json({
-                message: 'OTP code has expired',
+                message: 'OTP expired',
                 status: false,
                 timeStamp: timeNow,
             });
         }
     }
-    
 }
-
-
-
 
 module.exports = {
     login,
@@ -332,4 +325,4 @@ module.exports = {
     verifyCode,
     verifyCodePass,
     forGotPassword
-}
+};
